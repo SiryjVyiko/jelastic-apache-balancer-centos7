@@ -1,0 +1,50 @@
+#!/bin/bash
+
+start() {
+	sudo service cartridge status > /dev/null;
+	[ $? == "0" ] && { echo "Server is already started"; exit 0; }
+        sudo /etc/init.d/httpd start;
+}
+
+stop() {
+        sudo /etc/init.d/httpd stop;
+}
+reload() {
+        sudo /etc/init.d/httpd reload;
+}
+
+# See how we were called.
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  status)
+        sudo /etc/init.d/httpd status;
+        ;;
+  restart)
+        stop
+        start
+        ;;
+  condrestart|try-restart)
+        if status -p ${pidfile} $httpd >&/dev/null; then
+                stop
+                start
+        fi
+        ;;
+  force-reload|reload)
+        reload
+        ;;
+  graceful|help|configtest|fullstatus)
+        $apachectl $@
+        RETVAL=$?
+        ;;
+  *)
+        echo $"Usage: $prog {start|stop|restart|condrestart|try-restart|force-reload|reload|status|fullstatus|graceful|help|configtest}"
+        RETVAL=2
+esac
+
+exit $RETVAL
+

@@ -1,0 +1,19 @@
+#!/bin/bash -eu
+
+/etc/init.d/iptables save
+
+chmod -R 755 /var/log/httpd/
+
+echo "jelastic ALL=(ALL) NOPASSWD: /usr/sbin/setcap" >> /etc/sudoers
+
+mv /opt/repo/versions/2.4/mod_jk.so /usr/lib64/httpd/modules/mod_jk.so
+mv /opt/repo/versions/2.4/httpd /etc/init.d/httpd
+rm -f /etc/httpd/conf/httpd.conf
+
+/sbin/iptables -t nat -D PREROUTING -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8080
+/sbin/iptables -t nat -D PREROUTING -p tcp -m tcp --dport 443 -j REDIRECT --to-ports 8743
+/sbin/iptables -I INPUT -p tcp --dport 80 -j ACCEPT
+/sbin/iptables -I INPUT -p tcp --dport 8009 -j ACCEPT
+/sbin/iptables -I INPUT -p tcp --dport 443 -j ACCEPT
+
+/sbin/service iptables save 2>/dev/null 1>/dev/null;
