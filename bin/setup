@@ -1,6 +1,6 @@
 #!/bin/bash -eu
 
-/etc/init.d/iptables save
+service iptables save
 
 chmod -R 755 /var/log/httpd/
 
