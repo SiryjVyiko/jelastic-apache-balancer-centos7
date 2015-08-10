@@ -1,6 +1,6 @@
 #!/bin/bash -eu
 
-service iptables save
+service iptables save >> /dev/null 2>>/dev/null;
 
 chmod -R 755 /var/log/httpd/
 
