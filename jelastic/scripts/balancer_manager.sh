@@ -21,17 +21,13 @@ function _add_common_host(){
     echo 'worker.node-s'${host_num}'.port=8009' >> /etc/httpd/conf/worker.properties;
 }
 
-
-
 function _remove_common_host(){
-    sed -i '/'${host}'/d' /etc/httpd/conf/virtualhosts_http.conf;
-    sed -i '/'${host}'/d' /etc/httpd/conf/virtualhosts_ajp.conf;
-    local worker_string=`cat /etc/httpd/conf/worker.properties|grep ${host}|grep -o "worker.node-s[0-9]*"`;
+    [ -n "${host}" ] && sed -i '/'${host}'/d' /etc/httpd/conf/virtualhosts_http.conf && sed -i '/'${host}'/d' /etc/httpd/conf/virtualhosts_ajp.conf;
+    local worker_string=`cat /etc/httpd/conf/worker.properties|grep ${host}|grep -o "worker.node-s[0-9]*"`
     local node_string=`cat /etc/httpd/conf/worker.properties|grep ${host}|grep -o "node-s[0-9]*"`;
-    sed -i '/'${worker_string}'/d' /etc/httpd/conf/worker.properties;
-    sed -i 's/'${node_string}',//' /etc/httpd/conf/worker.properties;
+    [ -n "${worker_string}" ] && sed -i '/'${worker_string}'/d' /etc/httpd/conf/worker.properties;
+    [ -n "${node_string}" ] && sed -i 's/'${node_string}',//' /etc/httpd/conf/worker.properties;
 }
-
 
 function _add_host_to_group(){
     return 0;
