@@ -54,8 +54,8 @@ RETVAL=0
 STOP_TIMEOUT=${STOP_TIMEOUT-10}
 DEFAULT_HTTPD_CONFIG="/etc/httpd/conf/httpd.conf";
 TOTALMEM=`free -m | grep Mem | awk '{print $2}'`;
-MAX_CLIENTS=$(($TOTALMEM / 80));
-START_SERVERS=$(($TOTALMEM / 100));
+MAX_CLIENTS=$(grep -i "physical id" /proc/cpuinfo -c);
+START_SERVERS=$(grep -i "physical id" /proc/cpuinfo -c);
 
 backupConfig() {
     cp $1 $1.autobackup
